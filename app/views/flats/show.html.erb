@@ -1,0 +1,44 @@
+<div class="banner" >
+  <div class="banner-content">
+      <div id="map" style="height: 40vh; width: 100%; z-index: 0;"></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="flat-title js-flat" data-flat-address="<%= @flat.address %>">
+    <h1><%= @flat.name %></h1>
+    <p><%= @flat.address %></p>
+  </div>
+  <div class="flat-info">
+    <div class="flat-infos">
+      <h3>More info</h3>
+      <p><%= @flat.description %></p>
+    </div>
+    <div class="flat-details">
+      <h3>Details</h3>
+      <p>
+        <%= @flat.price_per_night %> <i class="fas fa-euro-sign"></i>
+        <%= @flat.number_of_guests %> <i class="fas fa-users"></i>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${document.querySelector('.js-flat').dataset.flatAddress}.json?access_token=pk.eyJ1IjoibWRlbGVncmFuZ2UiLCJhIjoiY2pvaWc4dncxMDg1NDNwcW4yMXd1YzVobyJ9.CwiakOxAF3MQIuUK4fXn9Q`)
+    .then(response => response.json())
+    .then((data) => {
+
+      mapboxgl.accessToken = "pk.eyJ1IjoibWRlbGVncmFuZ2UiLCJhIjoiY2pvaWc4dncxMDg1NDNwcW4yMXd1YzVobyJ9.CwiakOxAF3MQIuUK4fXn9Q";
+      const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v9',
+        center: [data.features[0].center[0], data.features[0].center[1]],
+        zoom: 12
+      });
+
+      new mapboxgl.Marker()
+        .setLngLat([data.features[0].center[0], data.features[0].center[1]])
+        .addTo(map);
+    });
+</script>
